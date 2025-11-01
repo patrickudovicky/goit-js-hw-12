@@ -1,26 +1,25 @@
-
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
 import { getImgRequest, PER_PAGE } from './js/pixabay-api.js';
-import { addGallery, 
+import { 
+  addGallery, 
   clearGallery, 
   showLoader, 
-  hideLoader 
+  hideLoader,
   showLoadMoreBtn,
   hideLoadMoreBtn
 } from './js/render-functions.js';
 
 const searchForm = document.querySelector('.form');
 const searchInput = document.querySelector('input[name="search-text"]');
-const loadMoreBtn = document.querySelector('.bttn-more');
 
 let currentQuery = '';
 let currentPage = 1;
 let totalHits = 0;
 
 searchForm.addEventListener('submit', onSearch);
-loadMoreBtn.addEventListener('click', onLoadMore);
+document.querySelector('.bttn-more').addEventListener('click', onLoadMore);
 
 async function onSearch(event) {
   event.preventDefault();
@@ -39,7 +38,6 @@ async function onSearch(event) {
   currentPage = 1;
   clearGallery();
   hideLoadMoreBtn();
-
   showLoader();
 
   try {
@@ -57,9 +55,16 @@ async function onSearch(event) {
 
     addGallery(data.hits);
 
-    if (totalHits > PER_PAGE) {
-    showLoadMoreBtn();
+    if (totalHits <= PER_PAGE) {
+      iziToast.info({
+        title: 'End of collection',
+        message: "We're sorry, but you've reached the end of search results.",
+        position: 'topRight',
+      });
+      return;
     }
+
+    showLoadMoreBtn();
 
   } catch (error) {
     iziToast.error({
@@ -73,23 +78,24 @@ async function onSearch(event) {
 }
 
 async function onLoadMore() {
-  currentPage += 1;
+  hideLoadMoreBtn();
   showLoader();
+  currentPage += 1;
 
   try {
     const data = await getImgRequest(currentQuery, currentPage);
     addGallery(data.hits);
-
     smoothScroll();
 
     const totalPages = Math.ceil(totalHits / PER_PAGE);
     if (currentPage >= totalPages) {
-      loadMoreBtn.classList.add('hidden');
       iziToast.info({
         title: 'End of collection',
         message: "We're sorry, but you've reached the end of search results.",
         position: 'topRight',
       });
+    } else {
+      showLoadMoreBtn();
     }
   } catch (error) {
     iziToast.error({
@@ -107,11 +113,8 @@ function smoothScroll() {
   if (!galleryItem) return;
 
   const { height: cardHeight } = galleryItem.getBoundingClientRect();
-
   window.scrollBy({
     top: cardHeight * 2,
     behavior: 'smooth',
   });
 }
- 
-
