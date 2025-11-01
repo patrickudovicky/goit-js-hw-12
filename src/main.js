@@ -3,7 +3,13 @@ import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
 import { getImgRequest, PER_PAGE } from './js/pixabay-api.js';
-import { addGallery, clearGallery, showLoader, hideLoader } from './js/render-functions.js';
+import { addGallery, 
+  clearGallery, 
+  showLoader, 
+  hideLoader 
+  showLoadMoreBtn,
+  hideLoadMoreBtn
+} from './js/render-functions.js';
 
 const searchForm = document.querySelector('.form');
 const searchInput = document.querySelector('input[name="search-text"]');
@@ -32,7 +38,7 @@ async function onSearch(event) {
   currentQuery = query;
   currentPage = 1;
   clearGallery();
-  loadMoreBtn.classList.add('hidden');
+  hideLoadMoreBtn();
 
   showLoader();
 
@@ -52,7 +58,7 @@ async function onSearch(event) {
     addGallery(data.hits);
 
     if (totalHits > PER_PAGE) {
-      loadMoreBtn.classList.remove('hidden');
+    showLoadMoreBtn();
     }
 
   } catch (error) {
@@ -63,7 +69,6 @@ async function onSearch(event) {
     });
   } finally {
     hideLoader();
-    searchForm.reset();
   }
 }
 
@@ -107,12 +112,6 @@ function smoothScroll() {
     top: cardHeight * 2,
     behavior: 'smooth',
   });
-}
-
-loadMoreBtn.classList.add('hidden');
-   
-if (totalHits > PER_PAGE) {
-    loadMoreBtn.classList.remove('hidden');
 }
  
 

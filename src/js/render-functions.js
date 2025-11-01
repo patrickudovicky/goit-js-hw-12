@@ -48,3 +48,21 @@ export function showLoader() {
 export function hideLoader() {
     loader.classList.remove('is-visible');
 }
+
+const loadMooreBtn = document.querySelector('.bttn-more');
+
+export function showLoader {
+document.getElementById('loader').classList.add('is-visible');
+}
+
+export function hideLoader {
+document.getElementById('loader').classList.remove('is-visible');
+}
+
+export function showLoadMoreBtn{
+  loadMooreBtn.classList.remove('hiden');
+}
+
+export function hideLoadMoreBtn{
+  loadMooreBtn.classList.add('hiden');
+}

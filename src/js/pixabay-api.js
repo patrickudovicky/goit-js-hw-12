@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const PER_PAGE = 10;
+export const PER_PAGE = 15;
 
 export async function getImgRequest(query, page = 1)  {
 const parameters = {
